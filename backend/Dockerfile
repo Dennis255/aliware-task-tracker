@@ -1,10 +1,12 @@
-FROM maven:3.9-eclipse-temurin-21 AS build
+# Etapa de compilación con Maven y Java 21
+FROM --platform=linux/amd64 maven:3.9-eclipse-temurin-21 AS build
 WORKDIR /app
-# Fíjate que no hay "/" antes de pom.xml
-COPY pom.xml . 
+COPY pom.xml .
 COPY src ./src
 RUN mvn clean package -DskipTests
-FROM eclipse-temurin:21-jre-alpine
+
+# Etapa final de ejecución
+FROM --platform=linux/amd64 eclipse-temurin:21-jre-alpine
 WORKDIR /app
 COPY --from=build /app/target/quarkus-app/lib/ /app/lib/
 COPY --from=build /app/target/quarkus-app/*.jar /app/

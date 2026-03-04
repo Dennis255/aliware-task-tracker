@@ -1,15 +1,37 @@
+version: '3.8'
+
 services:
-  postgres:
+  db:
     image: postgres:15-alpine
     container_name: aliware_db
     environment:
-      POSTGRES_DB: tasktracker_db
       POSTGRES_USER: aliware_user
       POSTGRES_PASSWORD: aliware_password
+      POSTGRES_DB: tasktracker_db
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - aliware-network
+
+  backend:
+    build: ./backend
+    container_name: aliware_backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    networks:
+      - aliware-network
+
+  frontend:
+    build: ./frontend
+    container_name: aliware_frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
     networks:
       - aliware-network
 

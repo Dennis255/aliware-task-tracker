@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: aliware_db
+    environment:
+      POSTGRES_DB: tasktracker_db
+      POSTGRES_USER: aliware_user
+      POSTGRES_PASSWORD: aliware_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - aliware-network
+
+networks:
+  aliware-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
